@@ -6,7 +6,8 @@ group = "io.github.doum"
 // Override at build time with -PreleaseVersion=<x.y.z> (used by the release CI job to stamp the tag).
 version = (findProperty("releaseVersion") as String?)?.takeIf { it.isNotBlank() } ?: "0.1.0-SNAPSHOT"
 
-val paperApi = "io.papermc.paper:paper-api:26.1.2.build.+"
+// Paper/Folia 26.2 line (currently alpha-only; dynamic build selector picks the latest 26.2 build).
+val paperApi = "io.papermc.paper:paper-api:26.2.build.+"
 
 java {
     toolchain {
