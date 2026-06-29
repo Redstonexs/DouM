@@ -1,0 +1,39 @@
+.gradle/
+.gradle-user-home/
+build/
+out/
+*.class
+*.log
+logs/
+__pycache__/
+*.py[cod]
+
+# Local server/runtime artifacts
+server.jar
+paper-*.jar
+folia-*.jar
+eula.txt
+server.properties
+banned-ips.json
+banned-players.json
+ops.json
+usercache.json
+whitelist.json
+crash-reports/
+plugins/
+world/
+world_nether/
+world_the_end/
+
+# omo planning/work artifacts (plans, drafts, evidence, qa runtime)
+.omo/
+
+# Bot/package-manager runtime artifacts
+node_modules/
+qa/mineflayer/node_modules/
+qa/mineflayer/.cache/
+qa/mineflayer/mineflayer-work/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

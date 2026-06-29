@@ -1,0 +1,22 @@
+# Leave deny-message blank to send the denial in the player's client language (English/Chinese,
+# falling back to English). Set deny-message to a custom string to override that operation's
+# message in a single language. Placeholders: {player} {operation} {target} {required} {actual}.
+operations:
+  block-break:
+    enabled: true
+    default-required-deaths: 0
+    bypass-permission: deathgates.bypass.block-break
+    deny-message: ""
+    targets: {}
+  block-place:
+    enabled: true
+    default-required-deaths: 0
+    bypass-permission: deathgates.bypass.block-place
+    deny-message: ""
+    targets: {}
+  craft-item:
+    enabled: true
+    default-required-deaths: 0
+    bypass-permission: deathgates.bypass.craft-item
+    deny-message: ""
+    targets: {}

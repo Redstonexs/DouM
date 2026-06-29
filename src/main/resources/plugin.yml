@@ -1,0 +1,40 @@
+name: DouM
+version: 0.1.0-SNAPSHOT
+main: io.github.doum.deathgates.DeathGatesPlugin
+api-version: '1.21.11'
+description: Configurable death-count gates for Paper and Folia servers.
+author: Redstonexs
+folia-supported: true
+
+commands:
+  doum:
+    description: Manage DouM configuration and player death counts.
+    usage: /doum <reload|deaths|setdeaths>
+    permission: deathgates.admin.view
+
+permissions:
+  deathgates.admin.reload:
+    description: Allows reloading DouM configuration.
+    default: op
+  deathgates.admin.view:
+    description: Allows viewing player death counts.
+    default: op
+  deathgates.admin.set:
+    description: Allows setting player death counts.
+    default: op
+  deathgates.bypass.*:
+    description: Allows bypassing all DouM operation checks.
+    default: op
+    children:
+      deathgates.bypass.block-break: true
+      deathgates.bypass.block-place: true
+      deathgates.bypass.craft-item: true
+  deathgates.bypass.block-break:
+    description: Allows bypassing block break gates.
+    default: false
+  deathgates.bypass.block-place:
+    description: Allows bypassing block place gates.
+    default: false
+  deathgates.bypass.craft-item:
+    description: Allows bypassing craft item gates.
+    default: false
