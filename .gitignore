@@ -37,3 +37,5 @@ qa/mineflayer/mineflayer-work/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+CLAUDE.md
