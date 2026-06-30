@@ -13,6 +13,8 @@ import io.github.doum.deathgates.i18n.TranslationsLoader;
 import io.github.doum.deathgates.listener.BlockGateListener;
 import io.github.doum.deathgates.listener.CraftGateListener;
 import io.github.doum.deathgates.listener.DeathListener;
+import io.github.doum.deathgates.listener.TargetNames;
+import io.github.doum.deathgates.message.ChatRenderer;
 import java.nio.file.Path;
 import java.util.logging.Level;
 import org.bukkit.command.PluginCommand;
@@ -23,12 +25,14 @@ public final class DeathGatesPlugin extends JavaPlugin {
     private volatile DeathGatesConfig config;
     private DeathCountStore deathCountStore;
     private Translations translations;
+    private ChatRenderer chatRenderer;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         config = BukkitDeathGatesConfigLoader.load(getConfig());
         translations = TranslationsLoader.load();
+        chatRenderer = new ChatRenderer(() -> currentConfig().messagePrefix());
 
         Path dataFile = getDataFolder().toPath().resolve("data.yml");
         deathCountStore = new YamlDeathCountStore(dataFile);
@@ -40,9 +44,15 @@ public final class DeathGatesPlugin extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new DeathListener(deathRecorder), this);
         pluginManager.registerEvents(
-                new BlockGateListener(this::currentConfig, deathCountStore, gateEvaluator, translations), this);
+                new BlockGateListener(
+                        this::currentConfig, deathCountStore, gateEvaluator, translations, chatRenderer,
+                        TargetNames::of),
+                this);
         pluginManager.registerEvents(
-                new CraftGateListener(this::currentConfig, deathCountStore, gateEvaluator, translations), this);
+                new CraftGateListener(
+                        this::currentConfig, deathCountStore, gateEvaluator, translations, chatRenderer,
+                        TargetNames::of),
+                this);
 
         getLogger().info("DouM enabled.");
     }
@@ -73,7 +83,7 @@ public final class DeathGatesPlugin extends JavaPlugin {
 
         letCoreCommandHandleSubcommandPermissions(pluginCommand);
         pluginCommand.setExecutor(new BukkitDeathGatesCommandExecutor(
-                getServer(), deathCountStore, this::reloadDeathGatesConfig, translations));
+                getServer(), deathCountStore, this::reloadDeathGatesConfig, translations, chatRenderer));
     }
 
     private static void letCoreCommandHandleSubcommandPermissions(PluginCommand pluginCommand) {

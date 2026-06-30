@@ -1,6 +1,11 @@
+# MiniMessage prefix shown before every DouM message (commands and denials). Colours use
+# MiniMessage tags such as <aqua>, <red>, <gradient:...>. Set to "" to disable the prefix.
+message-prefix: "<dark_gray>[<aqua>DouM</aqua>]</dark_gray> "
+
 # Leave deny-message blank to send the denial in the player's client language (English/Chinese,
 # falling back to English). Set deny-message to a custom string to override that operation's
-# message in a single language. Placeholders: {player} {operation} {target} {required} {actual}.
+# message in a single language; it may use MiniMessage colour tags. Placeholders:
+# {player} {operation} {target} {required} {actual} — {target} renders the item's localized name.
 operations:
   block-break:
     enabled: true

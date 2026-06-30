@@ -50,7 +50,10 @@ public final class DeathGatesConfigLoader {
         for (OperationType operation : OperationType.values()) {
             operations.put(operation, loadOperation(operationsSection, operation));
         }
-        return new DeathGatesConfig(operations);
+
+        String messagePrefix = readOptionalString(
+                root, "message-prefix", "message-prefix", DeathGatesConfig.DEFAULT_MESSAGE_PREFIX);
+        return new DeathGatesConfig(operations, messagePrefix);
     }
 
     public static DeathGatesConfig load(ConfigurationSection root) {

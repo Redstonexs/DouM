@@ -5,6 +5,7 @@ import io.github.doum.deathgates.command.DeathGatesCommand.OnlinePlayer;
 import io.github.doum.deathgates.death.DeathCountStore;
 import io.github.doum.deathgates.i18n.Language;
 import io.github.doum.deathgates.i18n.Translations;
+import io.github.doum.deathgates.message.ChatRenderer;
 import java.util.Objects;
 import java.util.Optional;
 import org.bukkit.Server;
@@ -15,19 +16,22 @@ import org.jetbrains.annotations.NotNull;
 
 public final class BukkitDeathGatesCommandExecutor implements CommandExecutor {
     private final Server server;
+    private final ChatRenderer chatRenderer;
     private final DeathGatesCommand command;
 
     public BukkitDeathGatesCommandExecutor(
             Server server,
             DeathCountStore deathCountStore,
             ConfigReloader configReloader,
-            Translations translations) {
+            Translations translations,
+            ChatRenderer chatRenderer) {
         this.server = Objects.requireNonNull(server, "server");
+        this.chatRenderer = Objects.requireNonNull(chatRenderer, "chatRenderer");
         this.command = new DeathGatesCommand(
                 this::onlinePlayer,
                 deathCountStore,
                 configReloader,
-                BukkitDeathGatesCommandExecutor::sendMessage,
+                this::sendMessage,
                 translations);
     }
 
@@ -48,11 +52,11 @@ public final class BukkitDeathGatesCommandExecutor implements CommandExecutor {
         return Optional.of(new OnlinePlayer(player.getUniqueId(), player.getName()));
     }
 
-    private static void sendMessage(DeathGatesCommand.CommandSender sender, String message) {
+    private void sendMessage(DeathGatesCommand.CommandSender sender, String message) {
         if (!(sender instanceof BukkitCommandSender bukkitSender)) {
             throw new IllegalArgumentException("Unsupported command sender: " + sender.getClass().getName());
         }
-        bukkitSender.sender().sendMessage(message);
+        bukkitSender.sender().sendMessage(chatRenderer.renderInfo(message));
     }
 
     private record BukkitCommandSender(org.bukkit.command.CommandSender sender)

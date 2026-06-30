@@ -8,6 +8,7 @@ import io.github.doum.deathgates.config.DeathGatesConfig;
 import io.github.doum.deathgates.config.OperationGateConfig;
 import io.github.doum.deathgates.death.InMemoryDeathCountStore;
 import io.github.doum.deathgates.i18n.TranslationsLoader;
+import io.github.doum.deathgates.message.ChatRenderer;
 import io.github.doum.deathgates.model.OperationType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -18,6 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,7 +39,8 @@ class BukkitDeathGatesCommandExecutorTest {
                 server,
                 store,
                 () -> ConfigReloadResult.success(config()),
-                TranslationsLoader.load());
+                TranslationsLoader.load(),
+                new ChatRenderer(() -> ""));
         List<String> messages = new ArrayList<>();
         CommandSender sender = sender(Set.of("deathgates.admin.set"), messages);
 
@@ -71,11 +75,17 @@ class BukkitDeathGatesCommandExecutorTest {
         return proxy(CommandSender.class, (proxy, method, arguments) -> switch (method.getName()) {
             case "hasPermission" -> permissions.contains(arguments[0]);
             case "sendMessage" -> {
-                messages.add((String) arguments[0]);
+                messages.add(plainText(arguments[0]));
                 yield null;
             }
             default -> defaultValue(method.getReturnType());
         });
+    }
+
+    private static String plainText(Object message) {
+        return message instanceof Component component
+                ? PlainTextComponentSerializer.plainText().serialize(component)
+                : String.valueOf(message);
     }
 
     private static DeathGatesConfig config() {

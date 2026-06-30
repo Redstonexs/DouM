@@ -148,6 +148,23 @@ class DeathGatesConfigTest {
         assertTrue(error.getMessage().contains("operations.block-break.targets.material:minecraft:diamond_ore"));
     }
 
+    @Test
+    void defaultsMessagePrefixWhenUnset() {
+        DeathGatesConfig loaded = DeathGatesConfigLoader.load(fixtureConfig());
+
+        assertEquals(DeathGatesConfig.DEFAULT_MESSAGE_PREFIX, loaded.messagePrefix());
+    }
+
+    @Test
+    void readsConfiguredMessagePrefix() {
+        FixtureSection config = fixtureConfig();
+        config.set("message-prefix", "<gold>DouM</gold> ");
+
+        DeathGatesConfig loaded = DeathGatesConfigLoader.load(config);
+
+        assertEquals("<gold>DouM</gold> ", loaded.messagePrefix());
+    }
+
     private static FixtureSection fixtureConfig() {
         FixtureSection config = new FixtureSection();
         addOperation(config, "block-break");

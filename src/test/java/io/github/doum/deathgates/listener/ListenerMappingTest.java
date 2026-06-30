@@ -12,6 +12,7 @@ import io.github.doum.deathgates.gate.GateEvaluator;
 import io.github.doum.deathgates.i18n.Language;
 import io.github.doum.deathgates.i18n.Translations;
 import io.github.doum.deathgates.i18n.TranslationsLoader;
+import io.github.doum.deathgates.message.ChatRenderer;
 import io.github.doum.deathgates.model.OperationType;
 import io.github.doum.deathgates.model.TargetKey;
 import java.util.ArrayList;
@@ -19,7 +20,10 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.junit.jupiter.api.Test;
@@ -32,6 +36,10 @@ class ListenerMappingTest {
     private static final TargetKey OAK_PLANKS_RECIPE = TargetKey.parse("recipe:minecraft:oak_planks");
     private static final TargetKey OAK_PLANKS_RESULT = TargetKey.parse("result:minecraft:oak_planks");
     private static final Translations TRANSLATIONS = TranslationsLoader.load();
+    private static final ChatRenderer RENDERER = new ChatRenderer(() -> "");
+    // Stub resolver: avoids the server-only translation lookup and yields a stable display name.
+    private static final Function<Material, Component> NAMER =
+            material -> Component.text(material.getKey().getKey());
 
     @Test
     void blockBreakMaterialMapsToMaterialTargetKey() {
@@ -41,7 +49,7 @@ class ListenerMappingTest {
                 0,
                 Map.of(DIAMOND_ORE, 2))));
         FakeCancellable cancellable = new FakeCancellable();
-        List<String> messages = new ArrayList<>();
+        List<Component> messages = new ArrayList<>();
 
         GateDecision decision = listener.handleBlockBreak(
                 Material.DIAMOND_ORE,
@@ -53,7 +61,7 @@ class ListenerMappingTest {
         assertEquals("material:minecraft:diamond_ore", decision.denialContext().get("target"));
         assertEquals(DIAMOND_ORE, decision.matchedTargetKey().orElseThrow());
         assertTrue(cancellable.cancelled());
-        assertEquals(List.of("Denied block-break material:minecraft:diamond_ore 2 1"), messages);
+        assertEquals(List.of("Denied breaking blocks diamond_ore 2 1"), plain(messages));
     }
 
     @Test
@@ -64,7 +72,7 @@ class ListenerMappingTest {
                 0,
                 Map.of(STONE, 1))));
         FakeCancellable cancellable = new FakeCancellable();
-        List<String> messages = new ArrayList<>();
+        List<Component> messages = new ArrayList<>();
 
         GateDecision decision = listener.handleBlockPlace(
                 Material.STONE,
@@ -76,7 +84,7 @@ class ListenerMappingTest {
         assertEquals("material:minecraft:stone", decision.denialContext().get("target"));
         assertEquals(STONE, decision.matchedTargetKey().orElseThrow());
         assertTrue(cancellable.cancelled());
-        assertEquals(List.of("Denied block-place material:minecraft:stone 1 0"), messages);
+        assertEquals(List.of("Denied placing blocks stone 1 0"), plain(messages));
     }
 
     @Test
@@ -97,7 +105,7 @@ class ListenerMappingTest {
                         OAK_PLANKS_RECIPE, 3,
                         OAK_PLANKS_RESULT, 1))));
         FakeCancellable cancellable = new FakeCancellable();
-        List<String> messages = new ArrayList<>();
+        List<Component> messages = new ArrayList<>();
 
         GateDecision decision = listener.handleCraftItem(
                 craftRecipe("minecraft", "oak_planks", Material.OAK_PLANKS),
@@ -108,7 +116,8 @@ class ListenerMappingTest {
         assertFalse(decision.allowed());
         assertEquals(OAK_PLANKS_RECIPE, decision.matchedTargetKey().orElseThrow());
         assertTrue(cancellable.cancelled());
-        assertEquals(List.of("Denied craft-item recipe:minecraft:oak_planks 3 2"), messages);
+        // The denial names the crafted result item, not the recipe key that matched.
+        assertEquals(List.of("Denied crafting items oak_planks 3 2"), plain(messages));
     }
 
     @Test
@@ -117,7 +126,7 @@ class ListenerMappingTest {
         BlockGateListener listener = blockListener(store, config(new OperationGateConfig(
                 OperationType.BLOCK_BREAK, true, 1, "deathgates.bypass.block-break", "", Map.of())));
         FakeCancellable cancellable = new FakeCancellable();
-        List<String> messages = new ArrayList<>();
+        List<Component> messages = new ArrayList<>();
 
         GateDecision decision = listener.handleBlockBreak(
                 Material.STONE,
@@ -128,7 +137,7 @@ class ListenerMappingTest {
         assertFalse(decision.allowed());
         assertTrue(cancellable.cancelled());
         assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains("死亡"));
+        assertTrue(plain(messages.get(0)).contains("死亡"));
     }
 
     @Test
@@ -139,7 +148,7 @@ class ListenerMappingTest {
                 1,
                 Map.of())));
         FakeCancellable cancellable = new FakeCancellable();
-        List<String> messages = new ArrayList<>();
+        List<Component> messages = new ArrayList<>();
 
         GateDecision decision = listener.handleBlockBreak(
                 Material.DIRT,
@@ -160,7 +169,7 @@ class ListenerMappingTest {
                 5,
                 Map.of())));
         FakeCancellable cancellable = new FakeCancellable();
-        List<String> messages = new ArrayList<>();
+        List<Component> messages = new ArrayList<>();
 
         GateDecision decision = listener.handleBlockBreak(
                 Material.DEEPSLATE,
@@ -182,11 +191,11 @@ class ListenerMappingTest {
     }
 
     private static BlockGateListener blockListener(InMemoryDeathCountStore store, DeathGatesConfig config) {
-        return new BlockGateListener(() -> config, store, new GateEvaluator(), TRANSLATIONS);
+        return new BlockGateListener(() -> config, store, new GateEvaluator(), TRANSLATIONS, RENDERER, NAMER);
     }
 
     private static CraftGateListener craftListener(InMemoryDeathCountStore store, DeathGatesConfig config) {
-        return new CraftGateListener(() -> config, store, new GateEvaluator(), TRANSLATIONS);
+        return new CraftGateListener(() -> config, store, new GateEvaluator(), TRANSLATIONS, RENDERER, NAMER);
     }
 
     private static InMemoryDeathCountStore storeWithDeaths(int deaths) {
@@ -233,6 +242,18 @@ class ListenerMappingTest {
                 targets);
     }
 
+    private static List<String> plain(List<Component> messages) {
+        List<String> rendered = new ArrayList<>();
+        for (Component message : messages) {
+            rendered.add(plain(message));
+        }
+        return rendered;
+    }
+
+    private static String plain(Component message) {
+        return PlainTextComponentSerializer.plainText().serialize(message);
+    }
+
     private static final class FakeCancellable {
         private boolean cancelled;
 
@@ -244,5 +265,4 @@ class ListenerMappingTest {
             return cancelled;
         }
     }
-
 }

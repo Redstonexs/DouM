@@ -35,9 +35,12 @@ git push origin v1.0.0
 
 ## Configuration
 
-Each operation has independent settings:
+A top-level `message-prefix` styles the tag shown before every DouM message, and each operation has independent settings:
 
 ```yaml
+# MiniMessage prefix before every DouM message; set to "" to disable it.
+message-prefix: "<dark_gray>[<aqua>DouM</aqua>]</dark_gray> "
+
 operations:
   block-break:
     enabled: true
@@ -86,13 +89,13 @@ DouM resolves each attempted operation in this order:
 
 Crafting checks recipe targets before result targets, so `recipe:minecraft:<key>` beats `result:minecraft:<key>` when both are present.
 
-Supported denial placeholders are `{player}`, `{operation}`, `{target}`, `{required}`, and `{actual}`.
+Supported denial placeholders are `{player}`, `{operation}`, `{target}`, `{required}`, and `{actual}`. `{target}` renders the item or block's name (not its id), and `{operation}` renders a localized action name. Denial messages and a custom `deny-message` may use [MiniMessage](https://docs.advntr.dev/minimessage/format.html) colour tags such as `<red>` and `<gradient:...>`.
 
 ## Languages
 
 DouM picks each player's language from their Minecraft client locale and falls back to English for any unsupported locale. English and Simplified Chinese (`zh`) ship inside the plugin jar as `messages/en.properties` and `messages/zh.properties`.
 
-Localization covers both `/doum` command output and the default denial messages. To force specific wording for one operation regardless of language, set that operation's `deny-message` in `config.yml`; leaving it blank uses the player's language.
+Localization covers both `/doum` command output and the default denial messages. Item and block names inside messages use Minecraft's own translations, so each player sees them in their own client language (for example "Stone" or "石头") regardless of the surrounding message language. To force specific wording for one operation regardless of language, set that operation's `deny-message` in `config.yml`; leaving it blank uses the player's language.
 
 ## Commands
 

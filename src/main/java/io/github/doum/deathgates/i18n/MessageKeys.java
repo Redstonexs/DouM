@@ -20,4 +20,9 @@ public final class MessageKeys {
     public static String deny(OperationType operation) {
         return "deny." + operation.id();
     }
+
+    /** Localized operation-name key, e.g. {@code operation.block-break}. */
+    public static String operation(OperationType operation) {
+        return "operation." + operation.id();
+    }
 }

@@ -6,11 +6,14 @@ import io.github.doum.deathgates.gate.GateDecision;
 import io.github.doum.deathgates.gate.GateEvaluator;
 import io.github.doum.deathgates.i18n.Language;
 import io.github.doum.deathgates.i18n.Translations;
+import io.github.doum.deathgates.message.ChatRenderer;
 import io.github.doum.deathgates.model.OperationType;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,16 +26,22 @@ public final class BlockGateListener implements Listener {
     private final DeathCountStore deathCountStore;
     private final GateEvaluator gateEvaluator;
     private final Translations translations;
+    private final ChatRenderer chatRenderer;
+    private final Function<Material, Component> targetNamer;
 
     public BlockGateListener(
             Supplier<DeathGatesConfig> configSupplier,
             DeathCountStore deathCountStore,
             GateEvaluator gateEvaluator,
-            Translations translations) {
+            Translations translations,
+            ChatRenderer chatRenderer,
+            Function<Material, Component> targetNamer) {
         this.configSupplier = Objects.requireNonNull(configSupplier, "configSupplier");
         this.deathCountStore = Objects.requireNonNull(deathCountStore, "deathCountStore");
         this.gateEvaluator = Objects.requireNonNull(gateEvaluator, "gateEvaluator");
         this.translations = Objects.requireNonNull(translations, "translations");
+        this.chatRenderer = Objects.requireNonNull(chatRenderer, "chatRenderer");
+        this.targetNamer = Objects.requireNonNull(targetNamer, "targetNamer");
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -59,7 +68,7 @@ public final class BlockGateListener implements Listener {
             Material material,
             GatePlayer player,
             Runnable cancelDenied,
-            Consumer<String> messageSink) {
+            Consumer<Component> messageSink) {
         return handleBlockGate(OperationType.BLOCK_BREAK, material, player, cancelDenied, messageSink);
     }
 
@@ -67,7 +76,7 @@ public final class BlockGateListener implements Listener {
             Material material,
             GatePlayer player,
             Runnable cancelDenied,
-            Consumer<String> messageSink) {
+            Consumer<Component> messageSink) {
         return handleBlockGate(OperationType.BLOCK_PLACE, material, player, cancelDenied, messageSink);
     }
 
@@ -76,15 +85,17 @@ public final class BlockGateListener implements Listener {
             Material material,
             GatePlayer player,
             Runnable cancelDenied,
-            Consumer<String> messageSink) {
+            Consumer<Component> messageSink) {
         return GateEventSupport.enforce(
                 configSupplier,
                 deathCountStore,
                 gateEvaluator,
                 translations,
+                chatRenderer,
                 operation,
                 player,
                 List.of(GateEventSupport.materialTarget(material)),
+                targetNamer.apply(material),
                 cancelDenied,
                 messageSink);
     }
