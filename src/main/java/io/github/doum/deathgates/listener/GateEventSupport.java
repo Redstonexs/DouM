@@ -27,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 final class GateEventSupport {
-    private static final String WILDCARD_BYPASS_PERMISSION = "deathgates.bypass.*";
+    private static final String WILDCARD_BYPASS_PERMISSION = "doum.deathnum.bypass.*";
 
     private GateEventSupport() {}
 

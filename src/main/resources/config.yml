@@ -10,18 +10,18 @@ operations:
   block-break:
     enabled: true
     default-required-deaths: 0
-    bypass-permission: deathgates.bypass.block-break
+    bypass-permission: doum.deathnum.bypass.block-break
     deny-message: ""
     targets: {}
   block-place:
     enabled: true
     default-required-deaths: 0
-    bypass-permission: deathgates.bypass.block-place
+    bypass-permission: doum.deathnum.bypass.block-place
     deny-message: ""
     targets: {}
   craft-item:
     enabled: true
     default-required-deaths: 0
-    bypass-permission: deathgates.bypass.craft-item
+    bypass-permission: doum.deathnum.bypass.craft-item
     deny-message: ""
     targets: {}

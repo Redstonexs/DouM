@@ -59,8 +59,8 @@ class DeathGatesCommandTest {
 
     @Test
     void setDeathsUpdatesStoreAndDeathsReportsCurrentCount() {
-        FakeSender setter = new FakeSender("deathgates.admin.set");
-        FakeSender viewer = new FakeSender("deathgates.admin.view");
+        FakeSender setter = new FakeSender("doum.deathnum.admin.set");
+        FakeSender viewer = new FakeSender("doum.deathnum.admin.view");
 
         command.execute(setter, "setdeaths", "Alex", "5");
         assertEquals(5, store.getDeaths(ALEX_ID));
@@ -74,7 +74,7 @@ class DeathGatesCommandTest {
 
     @Test
     void invalidCountIsRejectedAndDoesNotUpdateStore() {
-        FakeSender sender = new FakeSender("deathgates.admin.set");
+        FakeSender sender = new FakeSender("doum.deathnum.admin.set");
         store.setDeaths(ALEX_ID, 3, "Alex");
 
         command.execute(sender, "setdeaths", "Alex", "nope");
@@ -88,7 +88,7 @@ class DeathGatesCommandTest {
 
     @Test
     void reloadFailurePreservesPreviousConfigAndReportsFailure() {
-        FakeSender sender = new FakeSender("deathgates.admin.reload");
+        FakeSender sender = new FakeSender("doum.admin.reload");
         reloader.failNextReload("Required deaths cannot be negative");
 
         command.execute(sender, "reload");
@@ -103,8 +103,8 @@ class DeathGatesCommandTest {
 
     @Test
     void malformedInputAndUnknownPlayersAreRejected() {
-        FakeSender viewer = new FakeSender("deathgates.admin.view");
-        FakeSender setter = new FakeSender("deathgates.admin.set");
+        FakeSender viewer = new FakeSender("doum.deathnum.admin.view");
+        FakeSender setter = new FakeSender("doum.deathnum.admin.set");
 
         command.execute(viewer);
         assertTrue(messages.last().contains("Usage"));
@@ -124,7 +124,7 @@ class DeathGatesCommandTest {
 
     @Test
     void chineseSenderReceivesLocalizedMessages() {
-        FakeSender setter = new FakeSender(Language.CHINESE, "deathgates.admin.set");
+        FakeSender setter = new FakeSender(Language.CHINESE, "doum.deathnum.admin.set");
 
         command.execute(setter, "setdeaths", "Alex", "5");
 
@@ -144,7 +144,7 @@ class DeathGatesCommandTest {
                             operation,
                             true,
                             requiredDeaths,
-                            "deathgates.bypass." + operation.id(),
+                            "doum.deathnum.bypass." + operation.id(),
                             "",
                             Map.of()));
         }

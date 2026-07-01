@@ -209,7 +209,7 @@ class GateEvaluatorTest {
                 operation,
                 enabled,
                 defaultRequiredDeaths,
-                "deathgates.bypass." + operation.id(),
+                "doum.deathnum.bypass." + operation.id(),
                 "Denied {operation} {target} {required} {actual}",
                 targets);
     }

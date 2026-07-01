@@ -177,7 +177,7 @@ class DeathGatesConfigTest {
         String path = "operations." + operationId;
         config.set(path + ".enabled", true);
         config.set(path + ".default-required-deaths", 0);
-        config.set(path + ".bypass-permission", "deathgates.bypass." + operationId);
+        config.set(path + ".bypass-permission", "doum.deathnum.bypass." + operationId);
         config.set(path + ".deny-message", "Denied {operation} {target} {required} {actual}");
     }
 
@@ -185,7 +185,7 @@ class DeathGatesConfigTest {
         String path = "operations." + operationId;
         config.set(path + ".enabled", true);
         config.set(path + ".default-required-deaths", 0);
-        config.set(path + ".bypass-permission", "deathgates.bypass." + operationId);
+        config.set(path + ".bypass-permission", "doum.deathnum.bypass." + operationId);
         config.set(path + ".deny-message", "Denied {operation} {target} {required} {actual}");
     }
 

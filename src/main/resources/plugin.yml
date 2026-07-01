@@ -10,31 +10,30 @@ commands:
   doum:
     description: Manage DouM configuration and player death counts.
     usage: /doum <reload|deaths|setdeaths>
-    permission: deathgates.admin.view
 
 permissions:
-  deathgates.admin.reload:
+  doum.admin.reload:
     description: Allows reloading DouM configuration.
     default: op
-  deathgates.admin.view:
+  doum.deathnum.admin.view:
     description: Allows viewing player death counts.
     default: op
-  deathgates.admin.set:
+  doum.deathnum.admin.set:
     description: Allows setting player death counts.
     default: op
-  deathgates.bypass.*:
+  doum.deathnum.bypass.*:
     description: Allows bypassing all DouM operation checks.
     default: op
     children:
-      deathgates.bypass.block-break: true
-      deathgates.bypass.block-place: true
-      deathgates.bypass.craft-item: true
-  deathgates.bypass.block-break:
+      doum.deathnum.bypass.block-break: true
+      doum.deathnum.bypass.block-place: true
+      doum.deathnum.bypass.craft-item: true
+  doum.deathnum.bypass.block-break:
     description: Allows bypassing block break gates.
     default: false
-  deathgates.bypass.block-place:
+  doum.deathnum.bypass.block-place:
     description: Allows bypassing block place gates.
     default: false
-  deathgates.bypass.craft-item:
+  doum.deathnum.bypass.craft-item:
     description: Allows bypassing craft item gates.
     default: false

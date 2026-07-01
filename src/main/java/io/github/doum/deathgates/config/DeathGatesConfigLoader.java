@@ -89,7 +89,7 @@ public final class DeathGatesConfigLoader {
                 section,
                 "bypass-permission",
                 operationPath + ".bypass-permission",
-                "deathgates.bypass." + operation.id());
+                "doum.deathnum.bypass." + operation.id());
         String denyMessage = readOptionalString(section, "deny-message", operationPath + ".deny-message", "");
         Map<TargetKey, Integer> targets = loadTargets(section, operation, operationPath);
 

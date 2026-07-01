@@ -27,6 +27,7 @@ world_the_end/
 
 # omo planning/work artifacts (plans, drafts, evidence, qa runtime)
 .omo/
+scripts/qa/
 
 # Bot/package-manager runtime artifacts
 node_modules/

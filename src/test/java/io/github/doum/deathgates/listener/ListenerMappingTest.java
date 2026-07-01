@@ -124,7 +124,7 @@ class ListenerMappingTest {
     void blankDenyMessageUsesPlayerLanguageTranslation() {
         InMemoryDeathCountStore store = storeWithDeaths(0);
         BlockGateListener listener = blockListener(store, config(new OperationGateConfig(
-                OperationType.BLOCK_BREAK, true, 1, "deathgates.bypass.block-break", "", Map.of())));
+                OperationType.BLOCK_BREAK, true, 1, "doum.deathnum.bypass.block-break", "", Map.of())));
         FakeCancellable cancellable = new FakeCancellable();
         List<Component> messages = new ArrayList<>();
 
@@ -173,7 +173,7 @@ class ListenerMappingTest {
 
         GateDecision decision = listener.handleBlockBreak(
                 Material.DEEPSLATE,
-                player("deathgates.bypass.*"::equals),
+                player("doum.deathnum.bypass.*"::equals),
                 cancellable::cancel,
                 messages::add);
 
@@ -237,7 +237,7 @@ class ListenerMappingTest {
                 operation,
                 true,
                 defaultRequiredDeaths,
-                "deathgates.bypass." + operation.id(),
+                "doum.deathnum.bypass." + operation.id(),
                 "Denied {operation} {target} {required} {actual}",
                 targets);
     }

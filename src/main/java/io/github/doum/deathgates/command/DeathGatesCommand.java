@@ -13,9 +13,9 @@ import java.util.OptionalInt;
 import java.util.UUID;
 
 public final class DeathGatesCommand {
-    private static final String RELOAD_PERMISSION = "deathgates.admin.reload";
-    private static final String VIEW_PERMISSION = "deathgates.admin.view";
-    private static final String SET_PERMISSION = "deathgates.admin.set";
+    private static final String RELOAD_PERMISSION = "doum.admin.reload";
+    private static final String VIEW_PERMISSION = "doum.deathnum.admin.view";
+    private static final String SET_PERMISSION = "doum.deathnum.admin.set";
 
     private final PlayerResolver playerResolver;
     private final DeathCountStore deathCountStore;

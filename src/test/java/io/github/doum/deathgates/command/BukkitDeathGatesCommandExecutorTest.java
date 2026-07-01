@@ -42,7 +42,7 @@ class BukkitDeathGatesCommandExecutorTest {
                 TranslationsLoader.load(),
                 new ChatRenderer(() -> ""));
         List<String> messages = new ArrayList<>();
-        CommandSender sender = sender(Set.of("deathgates.admin.set"), messages);
+        CommandSender sender = sender(Set.of("doum.deathnum.admin.set"), messages);
 
         boolean handled = executor.onCommand(
                 sender,
@@ -97,7 +97,7 @@ class BukkitDeathGatesCommandExecutorTest {
                             operation,
                             true,
                             0,
-                            "deathgates.bypass." + operation.id(),
+                            "doum.deathnum.bypass." + operation.id(),
                             "",
                             Map.of()));
         }
