@@ -13,6 +13,7 @@ import io.github.doum.deathgates.i18n.TranslationsLoader;
 import io.github.doum.deathgates.listener.BlockGateListener;
 import io.github.doum.deathgates.listener.CraftGateListener;
 import io.github.doum.deathgates.listener.DeathListener;
+import io.github.doum.deathgates.listener.HardshipRulesListener;
 import io.github.doum.deathgates.listener.TargetNames;
 import io.github.doum.deathgates.message.ChatRenderer;
 import java.nio.file.Path;
@@ -53,6 +54,7 @@ public final class DeathGatesPlugin extends JavaPlugin {
                         this::currentConfig, deathCountStore, gateEvaluator, translations, chatRenderer,
                         TargetNames::of),
                 this);
+        pluginManager.registerEvents(new HardshipRulesListener(this::currentConfig), this);
 
         getLogger().info("DouM enabled.");
     }

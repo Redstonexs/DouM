@@ -9,6 +9,7 @@ import io.github.doum.deathgates.model.TargetKey;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.Test;
 
@@ -35,9 +36,9 @@ class DeathGatesConfigTest {
     @Test
     void loadsFromBukkitYamlConfiguration() {
         YamlConfiguration config = new YamlConfiguration();
-        addOperation(config, "block-break");
-        addOperation(config, "block-place");
-        addOperation(config, "craft-item");
+        addOperation(config::set, "block-break");
+        addOperation(config::set, "block-place");
+        addOperation(config::set, "craft-item");
         config.set("operations.block-break.default-required-deaths", 1);
         config.set("operations.block-place.default-required-deaths", 2);
         config.set("operations.craft-item.default-required-deaths", 9);
@@ -167,26 +168,18 @@ class DeathGatesConfigTest {
 
     private static FixtureSection fixtureConfig() {
         FixtureSection config = new FixtureSection();
-        addOperation(config, "block-break");
-        addOperation(config, "block-place");
-        addOperation(config, "craft-item");
+        addOperation(config::set, "block-break");
+        addOperation(config::set, "block-place");
+        addOperation(config::set, "craft-item");
         return config;
     }
 
-    private static void addOperation(FixtureSection config, String operationId) {
+    private static void addOperation(BiConsumer<String, Object> set, String operationId) {
         String path = "operations." + operationId;
-        config.set(path + ".enabled", true);
-        config.set(path + ".default-required-deaths", 0);
-        config.set(path + ".bypass-permission", "doum.deathnum.bypass." + operationId);
-        config.set(path + ".deny-message", "Denied {operation} {target} {required} {actual}");
-    }
-
-    private static void addOperation(YamlConfiguration config, String operationId) {
-        String path = "operations." + operationId;
-        config.set(path + ".enabled", true);
-        config.set(path + ".default-required-deaths", 0);
-        config.set(path + ".bypass-permission", "doum.deathnum.bypass." + operationId);
-        config.set(path + ".deny-message", "Denied {operation} {target} {required} {actual}");
+        set.accept(path + ".enabled", true);
+        set.accept(path + ".default-required-deaths", 0);
+        set.accept(path + ".bypass-permission", "doum.deathnum.bypass." + operationId);
+        set.accept(path + ".deny-message", "Denied {operation} {target} {required} {actual}");
     }
 
     private static final class FixtureSection implements DeathGatesConfigLoader.Section {

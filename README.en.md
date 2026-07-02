@@ -4,7 +4,7 @@
 
 [简体中文](README.md)
 
-DouM is a Paper plugin for Folia-compatible servers that counts each player's deaths and blocks configured actions until that player has reached the required death count. The first supported gates are block breaking, block placing, and item crafting.
+DouM is a Paper plugin for Folia-compatible servers that counts each player's deaths and blocks configured actions until that player has reached the required death count. The first supported gates are block breaking, block placing, and item crafting. DouM also includes disabled-by-default hardship rules for crafting failure, furnace trouble, no double chests, sleep/fishing/fall/low-health/biome penalties, and block retaliation.
 
 The plugin descriptor includes `folia-supported: true`. DouM uses Paper/Folia event surfaces directly and does not use Bukkit scheduler APIs for world or entity access. The current build targets Java 25 and the Paper/Folia API used by this project; there is No broad multi-version promise.
 
@@ -69,6 +69,45 @@ operations:
     targets:
       "recipe:minecraft:oak_planks": 1
       "result:minecraft:oak_planks": 2
+
+hardship-rules:
+  crafting:
+    enabled: false
+    fail-chance-percent: 0
+    tool-durability-min-percent: 70
+    tool-durability-max-percent: 95
+  furnace:
+    enabled: false
+    jam-chance-percent: 0
+    jam-cook-time-percent: 300
+    burnt-food-chance-percent: 0
+    fuel-burn-time-percent: 75
+  storage:
+    prevent-double-chests: false
+  sleep:
+    prevent-night-skip: false
+    require-full-sleep-respawn: false
+    full-sleep-ticks: 100
+  fishing:
+    enabled: false
+    wait-time-percent: 150
+  fall:
+    enabled: false
+    minimum-fall-distance-blocks: 3
+    minimum-fall-damage: 1
+  health:
+    enabled: false
+    threshold-health: 6
+    effect-duration-ticks: 100
+    amplifier: 0
+  biomes:
+    enabled: false
+    effect-duration-ticks: 100
+    amplifier: 0
+  block-retaliation:
+    enabled: false
+    chance-percent: 0
+    cooldown-ticks: 20
 ```
 
 Target key syntax is exact:
@@ -92,6 +131,20 @@ DouM resolves each attempted operation in this order:
 Crafting checks recipe targets before result targets, so `recipe:minecraft:<key>` beats `result:minecraft:<key>` when both are present.
 
 Supported denial placeholders are `{player}`, `{operation}`, `{target}`, `{required}`, and `{actual}`. `{target}` renders the item or block's name (not its id), and `{operation}` renders a localized action name. Denial messages and a custom `deny-message` may use [MiniMessage](https://docs.advntr.dev/minimessage/format.html) colour tags such as `<red>` and `<gradient:...>`.
+
+## Hardship Rules
+
+All `hardship-rules` entries are disabled by default and run independently from death-count gates when enabled:
+
+- `crafting` can cancel crafting by chance and randomize crafted damageable item durability within the configured remaining range.
+- `furnace` can lengthen cook time, shorten fuel burn time, and consume edible smelt results as burnt food.
+- `storage.prevent-double-chests` blocks same-type double chest formation and opening existing double chests.
+- `sleep.prevent-night-skip` can block bed-based night skipping; `sleep.require-full-sleep-respawn` requires reaching full sleep before the bed respawn point is kept.
+- `fishing.wait-time-percent` lengthens fishing hook wait windows.
+- `fall` raises the minimum fall damage once the configured fall distance is reached.
+- `health` applies slowness and blindness when health is at or below the configured threshold.
+- `biomes` applies poison in swamps and weakness in highland/mountain biomes as hypoxia.
+- `block-retaliation` can spawn a baby zombie wearing the broken block, with a per-player cooldown.
 
 ## Languages
 
@@ -121,7 +174,7 @@ Death counts persist by UUID in `plugins/DouM/data.yml`. Stored player names are
 
 ## Limitations
 
-No economy, database, web, GUI, scoreboard, PlaceholderAPI, or update checker is included. DouM does not include metrics, broad version compatibility shims, or extra operation types beyond `block-break`, `block-place`, and `craft-item`. There is No broad multi-version promise.
+No economy, database, web, GUI, scoreboard, PlaceholderAPI, or update checker is included. DouM does not include metrics, broad version compatibility shims, food spoilage, carrying weight, hidden durability UI, bottled-water fall mitigation, or complex pickup difficulty changes. There is No broad multi-version promise.
 
 ## QA
 

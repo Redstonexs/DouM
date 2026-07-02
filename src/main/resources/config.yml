@@ -25,3 +25,42 @@ operations:
     bypass-permission: doum.deathnum.bypass.craft-item
     deny-message: ""
     targets: {}
+
+hardship-rules:
+  crafting:
+    enabled: false
+    fail-chance-percent: 0
+    tool-durability-min-percent: 70
+    tool-durability-max-percent: 95
+  furnace:
+    enabled: false
+    jam-chance-percent: 0
+    jam-cook-time-percent: 300
+    burnt-food-chance-percent: 0
+    fuel-burn-time-percent: 75
+  storage:
+    prevent-double-chests: false
+  sleep:
+    prevent-night-skip: false
+    require-full-sleep-respawn: false
+    full-sleep-ticks: 100
+  fishing:
+    enabled: false
+    wait-time-percent: 150
+  fall:
+    enabled: false
+    minimum-fall-distance-blocks: 3
+    minimum-fall-damage: 1
+  health:
+    enabled: false
+    threshold-health: 6
+    effect-duration-ticks: 100
+    amplifier: 0
+  biomes:
+    enabled: false
+    effect-duration-ticks: 100
+    amplifier: 0
+  block-retaliation:
+    enabled: false
+    chance-percent: 0
+    cooldown-ticks: 20

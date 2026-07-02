@@ -6,13 +6,17 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
-public record DeathGatesConfig(Map<OperationType, OperationGateConfig> operations, String messagePrefix) {
+public record DeathGatesConfig(
+        Map<OperationType, OperationGateConfig> operations,
+        String messagePrefix,
+        HardshipRulesConfig hardshipRules) {
     /** MiniMessage prefix shown before every DouM message when none is configured; blank disables it. */
     public static final String DEFAULT_MESSAGE_PREFIX = "<dark_gray>[<aqua>DouM</aqua>]</dark_gray> ";
 
     public DeathGatesConfig {
         Objects.requireNonNull(operations, "operations");
         Objects.requireNonNull(messagePrefix, "messagePrefix");
+        Objects.requireNonNull(hardshipRules, "hardshipRules");
         EnumMap<OperationType, OperationGateConfig> copiedOperations = new EnumMap<>(OperationType.class);
         copiedOperations.putAll(operations);
         for (OperationType type : OperationType.values()) {
@@ -23,10 +27,14 @@ public record DeathGatesConfig(Map<OperationType, OperationGateConfig> operation
         operations = Collections.unmodifiableMap(copiedOperations);
     }
 
+    public DeathGatesConfig(Map<OperationType, OperationGateConfig> operations, String messagePrefix) {
+        this(operations, messagePrefix, HardshipRulesConfig.disabled());
+    }
+
     /** Builds a config with the {@link #DEFAULT_MESSAGE_PREFIX}; convenient for tests and callers
      * that do not customise the prefix. */
     public DeathGatesConfig(Map<OperationType, OperationGateConfig> operations) {
-        this(operations, DEFAULT_MESSAGE_PREFIX);
+        this(operations, DEFAULT_MESSAGE_PREFIX, HardshipRulesConfig.disabled());
     }
 
     public OperationGateConfig operation(OperationType operation) {

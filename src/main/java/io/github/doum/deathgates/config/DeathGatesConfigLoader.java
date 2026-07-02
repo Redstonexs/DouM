@@ -11,6 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class DeathGatesConfigLoader {
     private static final String OPERATIONS_PATH = "operations";
+    private static final String HARDSHIP_RULES_PATH = "hardship-rules";
 
     private DeathGatesConfigLoader() {}
 
@@ -53,7 +54,12 @@ public final class DeathGatesConfigLoader {
 
         String messagePrefix = readOptionalString(
                 root, "message-prefix", "message-prefix", DeathGatesConfig.DEFAULT_MESSAGE_PREFIX);
-        return new DeathGatesConfig(operations, messagePrefix);
+        Section hardshipRulesSection = root.section(HARDSHIP_RULES_PATH);
+        if (hardshipRulesSection == null && root.isSet(HARDSHIP_RULES_PATH)) {
+            throw new DeathGatesConfigException("Expected config section at " + HARDSHIP_RULES_PATH);
+        }
+        HardshipRulesConfig hardshipRules = HardshipRulesConfigLoader.load(hardshipRulesSection);
+        return new DeathGatesConfig(operations, messagePrefix, hardshipRules);
     }
 
     public static DeathGatesConfig load(ConfigurationSection root) {
